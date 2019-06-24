@@ -12,6 +12,20 @@
 
 #include "../include/ft_ls.h"
 
+char						*ft_strcpy(char *dst, const char *src)
+{
+	int						count;
+
+	count = 0;
+	while (src[count] != '\0')
+	{
+		dst[count] = src[count];
+		count++;
+	}
+	dst[count] = '\0';
+	return (dst);
+}
+
 t_file_time					*sort_files_time(t_file_time *af, int files_count)
 {
 	t_file_time				tmp;

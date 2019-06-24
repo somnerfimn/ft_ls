@@ -12,7 +12,7 @@
 
 #include "../include/ft_ls.h"
 
-size_t						ft_strlen(const char *str)
+int							ft_strlen(const char *str)
 {
 	size_t					tmp;
 

@@ -87,4 +87,8 @@ void					open_once(char *argument, t_keycheck btw);
 
 char					*ft_strjoin(char const *s1, char const *s2);
 
+char					*ft_strcpy(char *dst, const char *src);
+
+int						ft_strlen(const char *str);
+
 #endif

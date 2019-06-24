@@ -28,21 +28,26 @@ void						fork_key(t_file_time *fid, t_keycheck btw, int c)
 	}
 }
 
-int							files_struct(char *dir_name, t_file_time *fid)
+int							files_struct(char *dir_n, t_file_time *fid)
 {
 	DIR						*mydir;
-	struct dirent			*myfile;
+	struct dirent			*myf;
 	struct stat				mystat;
 	int						count;
+	char					*fn;
 
 	count = 0;
-	mydir = opendir(dir_name);
+	mydir = opendir(dir_n);
 	if (mydir != NULL)
 	{
-		while ((myfile = readdir(mydir)) != NULL)
+		while ((myf = readdir(mydir)) != NULL)
 		{
-			fid[count].myfile = myfile;
-			lstat(myfile->d_name, &mystat);
+			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
+			ft_strcpy(fn, dir_n);
+			ft_strcpy(fn + ft_strlen(dir_n), "/");
+			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
+			fid[count].myfile = myf;
+			lstat(myf->d_name, &mystat);
 			fid[count].mystat = mystat;
 			count++;
 		}
