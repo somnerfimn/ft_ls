@@ -12,7 +12,7 @@
 
 #include "../include/ft_ls.h"
 
-int							ft_strlen(const char *str)
+int						ft_strlen(const char *str)
 {
 	size_t					tmp;
 
@@ -38,7 +38,7 @@ char	*ft_strnew(size_t size)
 
 void						write_path_lnk(t_file_time file_in_dir, t_keycheck btw)
 {
-	char					linkbuf[256];
+	char					linkbuf[4096];
 	int						len;
 
 	if (btw.l == 1)

@@ -50,6 +50,7 @@ int							files_struct(char *dir_n, t_file_time *fid)
 			lstat(myf->d_name, &mystat);
 			fid[count].mystat = mystat;
 			count++;
+			free(fn);
 		}
 		closedir(mydir);
 	}
@@ -66,21 +67,21 @@ void						open_all(int count, char **arg, t_keycheck btw)
 	b = 0;
 	while (c < count - 1)
 	{
-		if (count > 2)
-		{
-			ft_putstr(arg[c]);
-			ft_putstr(":\n");
-		}
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
 		if (!fid)
 			perror("fid");
 		b = files_struct(arg[c], fid);
+		if (count > 2 && b != 0)
+		{
+			ft_putstr(arg[c]);
+			ft_putstr(":\n");
+		}
 		sort_files_time(fid, count_files(arg[c]));
 		if (btw.t == 0)
 			sort_files_ascii(fid, count_files(arg[c]));
 		fork_key(fid, btw, b);
 		c++;
-		if (c < count - 1)
+		if (c < count - 1 && b != 0)
 			ft_putstr("\n");
 		free(fid);
 	}
