@@ -53,6 +53,14 @@ int					check_some_key(char *argument, char key)
 	return (0);
 }
 
+void				print_err(char *key_err)
+{
+	ft_putstr("ft_ls: illegal option --");
+	write(1, &key_err[1], 1);
+	ft_putendl("usage: ft_ls [-Ralrt] [file ...]");
+	exit (1);
+}
+
 t_keycheck			search_key(int argc, char **arguments, t_keycheck btw)
 {
 	int				count;
@@ -72,6 +80,8 @@ t_keycheck			search_key(int argc, char **arguments, t_keycheck btw)
 				btw.l = 1;
 			if (check_some_key(arguments[count], 'R') == 1)
 				btw.r_large = 1;
+			else
+				print_err(arguments[count]);
 		}
 		count++;
 	}
