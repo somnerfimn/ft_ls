@@ -47,7 +47,7 @@ int							files_struct(char *dir_n, t_file_time *fid)
 			ft_strcpy(fn + ft_strlen(dir_n), "/");
 			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 			fid[count].myfile = myf;
-			lstat(myf->d_name, &mystat);
+			lstat(fn, &mystat);
 			fid[count].mystat = mystat;
 			count++;
 			free(fn);

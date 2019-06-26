@@ -23,6 +23,7 @@
 # include <stdlib.h>
 # include <grp.h>
 # include <time.h>
+# include <string.h>
 
 typedef struct			s_keycheck
 {
