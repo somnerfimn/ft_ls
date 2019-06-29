@@ -12,6 +12,37 @@
 
 #include "../include/ft_ls.h"
 
+void				recursion(char *dir_n, t_keycheck btw)
+{
+	DIR				*mydir;
+	struct stat		mystat;
+	struct dirent	*myf;
+	char			*fn;
+
+	mydir = opendir(dir_n);
+	if (mydir != NULL)
+	{
+		while ((myf = readdir(mydir)) != NULL)
+		{
+			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
+			ft_strcpy(fn, dir_n);
+			ft_strcpy(fn + ft_strlen(dir_n), "/");
+			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
+			lstat(fn, &mystat);
+			if (S_ISDIR(mystat.st_mode) && ft_strcmp(".", myf->d_name) != 0 &&
+				ft_strcmp("..", myf->d_name) != 0 && ft_strcmp(".git", myf->d_name) != 0)
+			{
+				ft_putstr("\n");
+				ft_putstr(fn);
+				ft_putstr(":\n");
+				open_once(myf->d_name, btw);
+			}
+			free(fn);
+		}
+		closedir (mydir);
+	}
+}
+
 void						fork_key(t_file_time *fid, t_keycheck btw, int c)
 {
 	int						count;
@@ -84,6 +115,8 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		if (c < count - 1 && b != 0)
 			ft_putstr("\n");
 		free(fid);
+		if (btw.r_large == 1)
+			recursion(arg[c], btw);
 	}
 }
 
@@ -103,5 +136,6 @@ void						open_once(char *arg, t_keycheck btw)
 		sort_files_time(fid, count_files(arg));
 	fork_key(fid, btw, count_file);
 	free(fid);
-	fid = NULL;
+	if (btw.r_large == 1)
+		recursion(arg, btw);
 }

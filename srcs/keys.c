@@ -42,23 +42,29 @@ int					count_files(char *dir_name)
 	return (result);
 }
 
-int					check_some_key(char *argument, char key)
+void				print_err(char key_err)
+{
+	ft_putstr("ft_ls: illegal option -- ");
+	write(1, &key_err, 1);
+	ft_putendl("\nusage: ft_ls [-Ralrt] [file ...]");
+	exit (1);
+}
+
+int					check_some_key(char *arg, char key)
 {
 	int				count;
 
-	count = 0;
-	while (argument[count])
-		if (argument[count++] == key)
+	count = 1;
+	while (arg[count])
+	{
+		if (arg[count] != 'l' && arg[count] != 'a' && arg[count] != 'r' &&
+			arg[count] != 't' && arg[count] != 'R')
+			print_err(arg[count]);
+		if (arg[count] == key)
 			return (1);
+		count++;
+	}
 	return (0);
-}
-
-void				print_err(char *key_err)
-{
-	ft_putstr("ft_ls: illegal option --");
-	write(1, &key_err[1], 1);
-	ft_putendl("usage: ft_ls [-Ralrt] [file ...]");
-	exit (1);
 }
 
 t_keycheck			search_key(int argc, char **arguments, t_keycheck btw)
@@ -80,8 +86,6 @@ t_keycheck			search_key(int argc, char **arguments, t_keycheck btw)
 				btw.l = 1;
 			if (check_some_key(arguments[count], 'R') == 1)
 				btw.r_large = 1;
-			else
-				print_err(arguments[count]);
 		}
 		count++;
 	}

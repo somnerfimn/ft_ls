@@ -92,4 +92,6 @@ char					*ft_strcpy(char *dst, const char *src);
 
 int						ft_strlen(const char *str);
 
+void					recursion(char *dir_n, t_keycheck btw);
+
 #endif
