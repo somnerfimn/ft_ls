@@ -38,6 +38,7 @@ typedef struct			s_file_time
 {
 	struct dirent		*myfile;
 	struct stat			mystat;
+	char				*link_name;
 }						t_file_time;
 
 void					ft_putchar(char c);
@@ -64,7 +65,7 @@ void					access_rights(struct stat mystat);
 
 int						count_files(char *dir_name);
 
-int						files_struct(char *dir_name, t_file_time *file_in_dir);
+int						files_struct(char *d, t_file_time *f, t_keycheck b);
 
 t_file_time				*sort_files_time(t_file_time *af, int files_count);
 

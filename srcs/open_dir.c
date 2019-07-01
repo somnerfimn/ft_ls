@@ -29,14 +29,46 @@ void				recursion(char *dir_n, t_keycheck btw)
 			ft_strcpy(fn + ft_strlen(dir_n), "/");
 			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 			lstat(fn, &mystat);
-			if (S_ISDIR(mystat.st_mode) && ft_strcmp(".", myf->d_name) != 0 &&
-				ft_strcmp("..", myf->d_name) != 0 && ft_strcmp(".git", myf->d_name) != 0)
+			printf("%s ++++++!%s!\n", dir_n, myf->d_name);
+			if (S_ISDIR(mystat.st_mode) && (myf->d_name[0] != '.'))
 			{
 				ft_putstr("\n");
 				ft_putstr(fn);
 				ft_putstr(":\n");
 				open_once(myf->d_name, btw);
 			}
+			free(fn);
+		}
+		closedir (mydir);
+	}
+}
+
+void				a_recursion(char *dir_n, t_keycheck btw)
+{
+	DIR				*mydir;
+	struct stat		mystat;
+	struct dirent	*myf;
+	char			*fn;
+
+	mydir = opendir(dir_n);
+	if (mydir != NULL)
+	{
+		while ((myf = readdir(mydir)) != NULL)
+		{
+			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
+			ft_strcpy(fn, dir_n);
+			ft_strcpy(fn + ft_strlen(dir_n), "/");
+			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
+			lstat(fn, &mystat);
+			printf("%s ------!%s!\n", dir_n, myf->d_name);
+			if (S_ISDIR(mystat.st_mode) && myf->d_name[1] != '\0')
+				if (ft_strcmp(myf->d_name, "..") != 0)
+				{
+					ft_putstr("\n");
+					ft_putstr(fn);
+					ft_putstr(":\n");
+					open_once(myf->d_name, btw);
+				}
 			free(fn);
 		}
 		closedir (mydir);
@@ -59,15 +91,33 @@ void						fork_key(t_file_time *fid, t_keycheck btw, int c)
 	}
 }
 
-int							files_struct(char *dir_n, t_file_time *fid)
+int							block_size(struct stat mystat)
+{
+	int						bsize;
+	int						tmp;
+
+	bsize = 0;
+	tmp = 0;
+	tmp += mystat.st_size;
+	bsize = tmp / 4096;
+	bsize *= 8;
+	bsize += 8;
+	if (mystat.st_size == 0)
+		return (0);
+	return (bsize);
+}
+
+int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 {
 	DIR						*mydir;
+	int						bsize;
 	struct dirent			*myf;
 	struct stat				mystat;
 	int						count;
 	char					*fn;
 
 	count = 0;
+	bsize = 0;
 	mydir = opendir(dir_n);
 	if (mydir != NULL)
 	{
@@ -79,11 +129,20 @@ int							files_struct(char *dir_n, t_file_time *fid)
 			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 			fid[count].myfile = myf;
 			lstat(fn, &mystat);
+			bsize += block_size(mystat);
+			if ((btw.a == 0 && myf->d_name[0] == '.') || S_ISDIR(mystat.st_mode))
+				bsize -= block_size(mystat);
 			fid[count].mystat = mystat;
 			count++;
 			free(fn);
 		}
 		closedir(mydir);
+		if (btw.l == 1)
+		{
+			ft_putstr("total ");
+			ft_putnbr(bsize);
+			ft_putstr("\n");
+		}
 	}
 	return (count);
 }
@@ -101,7 +160,7 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
 		if (!fid)
 			perror("fid");
-		b = files_struct(arg[c], fid);
+		b = files_struct(arg[c], fid, btw);
 		if (count > 2 && b != 0)
 		{
 			ft_putstr(arg[c]);
@@ -115,8 +174,10 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		if (c < count - 1 && b != 0)
 			ft_putstr("\n");
 		free(fid);
-		if (btw.r_large == 1)
+		if (btw.r_large == 1 && btw.a == 0)
 			recursion(arg[c], btw);
+		if (btw.r_large == 1 && btw.a == 1)
+			a_recursion(arg[c], btw);
 	}
 }
 
@@ -129,13 +190,16 @@ void						open_once(char *arg, t_keycheck btw)
 	fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg));
 	if (!fid)
 		perror("fid");
-	count_file = files_struct(arg, fid);
+	count_file = files_struct(arg, fid, btw);
 	if (btw.t == 0)
 		sort_files_ascii(fid, count_files(arg));
 	else
 		sort_files_time(fid, count_files(arg));
 	fork_key(fid, btw, count_file);
 	free(fid);
-	if (btw.r_large == 1)
+	printf("(((%s))))\n", arg);
+	if (btw.r_large == 1 && btw.a == 0)
 		recursion(arg, btw);
+	if (btw.r_large == 1 && btw.a == 1)
+		a_recursion(arg, btw);
 }
