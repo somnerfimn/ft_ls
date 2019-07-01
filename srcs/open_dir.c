@@ -29,13 +29,12 @@ void				recursion(char *dir_n, t_keycheck btw)
 			ft_strcpy(fn + ft_strlen(dir_n), "/");
 			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 			lstat(fn, &mystat);
-			printf("%s ++++++!%s!\n", dir_n, myf->d_name);
 			if (S_ISDIR(mystat.st_mode) && (myf->d_name[0] != '.'))
 			{
 				ft_putstr("\n");
 				ft_putstr(fn);
 				ft_putstr(":\n");
-				open_once(myf->d_name, btw);
+				open_once(fn, btw);
 			}
 			free(fn);
 		}
@@ -60,14 +59,13 @@ void				a_recursion(char *dir_n, t_keycheck btw)
 			ft_strcpy(fn + ft_strlen(dir_n), "/");
 			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 			lstat(fn, &mystat);
-			printf("%s ------!%s!\n", dir_n, myf->d_name);
 			if (S_ISDIR(mystat.st_mode) && myf->d_name[1] != '\0')
 				if (ft_strcmp(myf->d_name, "..") != 0)
 				{
 					ft_putstr("\n");
 					ft_putstr(fn);
 					ft_putstr(":\n");
-					open_once(myf->d_name, btw);
+					open_once(fn, btw);
 				}
 			free(fn);
 		}
@@ -197,7 +195,6 @@ void						open_once(char *arg, t_keycheck btw)
 		sort_files_time(fid, count_files(arg));
 	fork_key(fid, btw, count_file);
 	free(fid);
-	printf("(((%s))))\n", arg);
 	if (btw.r_large == 1 && btw.a == 0)
 		recursion(arg, btw);
 	if (btw.r_large == 1 && btw.a == 1)
