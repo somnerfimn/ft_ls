@@ -158,12 +158,12 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
 		if (!fid)
 			perror("fid");
-		b = files_struct(arg[c], fid, btw);
-		if (count > 2 && b != 0)
+		if (count > 2)
 		{
 			ft_putstr(arg[c]);
 			ft_putstr(":\n");
 		}
+		b = files_struct(arg[c], fid, btw);
 		sort_files_time(fid, count_files(arg[c]));
 		if (btw.t == 0)
 			sort_files_ascii(fid, count_files(arg[c]));
