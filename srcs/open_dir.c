@@ -158,7 +158,7 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
 		if (!fid)
 			perror("fid");
-		if (count > 2)
+		if (count > 2 && count_files(arg[c]) != 0)
 		{
 			ft_putstr(arg[c]);
 			ft_putstr(":\n");

@@ -21,7 +21,8 @@ SRCS = srcs/ft_ls.c \
 		srcs/open_dir.c \
 		srcs/print_l.c \
 		srcs/sort_params.c \
-		srcs/subfunction.c
+		srcs/subfunction.c \
+		srcs/search_file.c
 
 all : $(NAME)
 

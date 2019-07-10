@@ -95,4 +95,6 @@ int						ft_strlen(const char *str);
 
 void					recursion(char *dir_n, t_keycheck btw);
 
+void					search_file(int c, char **arg, t_keycheck btw);
+
 #endif
