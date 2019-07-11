@@ -20,6 +20,7 @@ void				recursion(char *dir_n, t_keycheck btw)
 	char			*fn;
 
 	mydir = opendir(dir_n);
+	printf("123\n");
 	if (mydir != NULL)
 	{
 		while ((myf = readdir(mydir)) != NULL)
@@ -105,6 +106,23 @@ int							block_size(struct stat mystat)
 	return (bsize);
 }
 
+t_file_time					link_name(t_file_time fid, char *fn)
+{
+	char					*linkbuf;
+	int						len;
+	int						i;
+
+	i = 0;
+	linkbuf = (char *)malloc(sizeof(char) * 4096);
+	fid.lnk = (char *)malloc(sizeof(char) * 4096);
+	len = readlink(fn, linkbuf, sizeof(linkbuf));
+	linkbuf[len] = '\0';
+	fid.lnk = ft_strcpy(fid.lnk, linkbuf);
+	free(linkbuf);
+	len = 0;
+	return(fid);
+}
+
 int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 {
 	DIR						*mydir;
@@ -127,10 +145,13 @@ int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 			fid[count].myfile = myf;
 			lstat(fn, &mystat);
+			ft_putendl(fid[count].lnk);
 			bsize += block_size(mystat);
 			if ((btw.a == 0 && myf->d_name[0] == '.') || S_ISDIR(mystat.st_mode))
 				bsize -= block_size(mystat);
 			fid[count].mystat = mystat;
+			if (S_ISLNK(mystat.st_mode))
+				fid[count] = link_name(fid[count], fn);
 			count++;
 			free(fn);
 		}

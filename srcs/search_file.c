@@ -72,11 +72,13 @@ void						search_file(int argc, char **copy_argv, t_keycheck btw)
 	struct stat				mystat;
 	int						count;
 	char					*fn;
+	char					*dir;
 
 	count = 0;
 	while (count != argc - 1)
 	{
-		mydir = opendir(dir_piece(copy_argv[count]));
+		dir = dir_piece(copy_argv[count]);
+		dir ? mydir = opendir(dir) : exit(1);
 		if (mydir != NULL)
 		{
 			while ((myf = readdir(mydir)) != NULL)

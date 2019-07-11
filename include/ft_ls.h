@@ -38,7 +38,7 @@ typedef struct			s_file_time
 {
 	struct dirent		*myfile;
 	struct stat			mystat;
-	char				*link_name;
+	char				*lnk;
 }						t_file_time;
 
 void					ft_putchar(char c);
