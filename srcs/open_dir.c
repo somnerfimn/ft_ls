@@ -174,6 +174,7 @@ void						open_all(int count, char **arg, t_keycheck btw)
 	b = 0;
 	while (c < count - 1)
 	{
+		arg[c][ft_strlen(arg[c]) - 1] != '/' ? c++ : c;
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
 		if (!fid)
 			perror("fid");

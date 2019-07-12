@@ -126,7 +126,10 @@ void				dir_err(int argc, char **copy_argv)
 			{
 				ft_putstr("ls: ");
 				ft_putstr(copy_argv[count]);
-				ft_putstr(": No such file or directory\n");
+				if (copy_argv[count][ft_strlen(copy_argv[count]) - 1] == '/')
+					ft_putstr(" Not a directory\n");
+				if (copy_argv[count][0] != '.')
+					ft_putstr(": No such file or directory\n");
 			}
 		}
 		count++;

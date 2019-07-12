@@ -94,7 +94,9 @@ void						search_file(int argc, char **copy_argv, t_keycheck btw)
 				if (muhi_otdelno(copy_argv[count], myf->d_name) == 0)
 					if (!(S_ISDIR(mystat.st_mode)))
 					{
-						btw.l == 1 ? access_rights(mystat) : 0;
+						if (S_ISLNK(mystat.st_mode) && btw.l == 1)
+							if (copy_argv[count][ft_strlen(copy_argv[count]) - 1] != '/')
+								access_rights(mystat);
 						ft_putendl(copy_argv[count]);
 					}
 				free(fn);
