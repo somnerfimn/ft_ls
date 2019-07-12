@@ -81,7 +81,7 @@ void					fork_key(t_file_time *fid, t_keycheck btw, int b);
 
 void					open_all(int count, char **argument, t_keycheck btw);
 
-void					dir_err(int count, char **argument);
+void					dir_err(int argc, char **copy_argv);
 
 void					sort_params(int argc, char **copy_argv);
 
@@ -96,5 +96,9 @@ int						ft_strlen(const char *str);
 void					recursion(char *dir_n, t_keycheck btw);
 
 void					search_file(int c, char **arg, t_keycheck btw);
+
+char					*dir_piece(char *arg);
+
+int						muhi_otdelno(char *arg, char *dst);
 
 #endif

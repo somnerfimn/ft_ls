@@ -20,7 +20,6 @@ void				recursion(char *dir_n, t_keycheck btw)
 	char			*fn;
 
 	mydir = opendir(dir_n);
-	printf("123\n");
 	if (mydir != NULL)
 	{
 		while ((myf = readdir(mydir)) != NULL)
@@ -145,7 +144,6 @@ int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 			fid[count].myfile = myf;
 			lstat(fn, &mystat);
-			ft_putendl(fid[count].lnk);
 			bsize += block_size(mystat);
 			if ((btw.a == 0 && myf->d_name[0] == '.') || S_ISDIR(mystat.st_mode))
 				bsize -= block_size(mystat);

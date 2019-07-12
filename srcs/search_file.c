@@ -60,7 +60,10 @@ char						*dir_piece(char *arg)
 			count++;
 		}
 	else
+	{
+		free(result);
 		return(".");
+	}
 	result[count] = '\0';
 	return (result);
 }

@@ -92,22 +92,43 @@ t_keycheck			search_key(int argc, char **arguments, t_keycheck btw)
 	return (btw);
 }
 
-void				dir_err(int count, char **argument)
+void				dir_err(int argc, char **copy_argv)
 {
-	int				count_arg;
-	DIR				*mydir;
+	DIR						*mydir;
+	struct dirent			*myf;
+	struct stat				mystat;
+	int						count;
+	char					*fn;
+	char					*dir;
+	int						tmp;
 
-	count_arg = 0;
-	while (count_arg != count - 1)
+	count = 0;
+	tmp = 1;
+	while (count != argc - 1)
 	{
-		mydir = opendir(argument[count_arg]);
-		if (mydir == NULL)
+		dir = dir_piece(copy_argv[count]);
+		dir ? mydir = opendir(dir) : exit(1);
+		if (mydir != NULL)
 		{
-			ft_putstr("ft_ls: ");
-			perror(argument[count_arg]);
-		}
-		else
+			while ((myf = readdir(mydir)) != NULL && tmp == 1)
+			{
+				fn = (char *)malloc(ft_strlen(copy_argv[count]) + ft_strlen(myf->d_name) + 2);
+				ft_strcpy(fn, copy_argv[count]);
+				ft_strcpy(fn + ft_strlen(copy_argv[count]), "/");
+				ft_strcpy(fn + ft_strlen(copy_argv[count]) + 1, myf->d_name);
+				lstat(copy_argv[count], &mystat);
+				if (muhi_otdelno(copy_argv[count], myf->d_name) == 0)
+					tmp = 0;
+				free(fn);
+			}
 			closedir(mydir);
-		count_arg++;
+			if (tmp == 1)
+			{
+				ft_putstr("ls: ");
+				ft_putstr(copy_argv[count]);
+				ft_putstr(": No such file or directory\n");
+			}
+		}
+		count++;
 	}
 }
