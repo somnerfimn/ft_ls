@@ -25,9 +25,7 @@ void				recursion(char *dir_n, t_keycheck btw)
 		while ((myf = readdir(mydir)) != NULL)
 		{
 			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
-			ft_strcpy(fn, dir_n);
-			ft_strcpy(fn + ft_strlen(dir_n), "/");
-			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
+			add_dir_piece(dir_n, fn, myf);
 			lstat(fn, &mystat);
 			if (S_ISDIR(mystat.st_mode) && (myf->d_name[0] != '.'))
 			{
@@ -55,9 +53,7 @@ void				a_recursion(char *dir_n, t_keycheck btw)
 		while ((myf = readdir(mydir)) != NULL)
 		{
 			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
-			ft_strcpy(fn, dir_n);
-			ft_strcpy(fn + ft_strlen(dir_n), "/");
-			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
+			add_dir_piece(dir_n, fn, myf);
 			lstat(fn, &mystat);
 			if (S_ISDIR(mystat.st_mode) && myf->d_name[1] != '\0')
 				if (ft_strcmp(myf->d_name, "..") != 0)
@@ -139,9 +135,7 @@ int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 		while ((myf = readdir(mydir)) != NULL)
 		{
 			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
-			ft_strcpy(fn, dir_n);
-			ft_strcpy(fn + ft_strlen(dir_n), "/");
-			ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
+			add_dir_piece(dir_n, fn, myf);
 			fid[count].myfile = myf;
 			lstat(fn, &mystat);
 			bsize += block_size(mystat);
@@ -155,11 +149,7 @@ int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 		}
 		closedir(mydir);
 		if (btw.l == 1)
-		{
-			ft_putstr("total ");
-			ft_putnbr(bsize);
-			ft_putstr("\n");
-		}
+			print_total(bsize);
 	}
 	return (count);
 }
@@ -174,15 +164,11 @@ void						open_all(int count, char **arg, t_keycheck btw)
 	b = 0;
 	while (c < count - 1)
 	{
-		arg[c][ft_strlen(arg[c]) - 1] != '/' ? c++ : c;
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
 		if (!fid)
 			perror("fid");
 		if (count > 2 && count_files(arg[c]) != 0)
-		{
-			ft_putstr(arg[c]);
-			ft_putstr(":\n");
-		}
+			print_double_point(arg[c]);
 		b = files_struct(arg[c], fid, btw);
 		sort_files_time(fid, count_files(arg[c]));
 		if (btw.t == 0)
@@ -192,10 +178,8 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		if (c < count - 1 && b != 0)
 			ft_putstr("\n");
 		free(fid);
-		if (btw.r_large == 1 && btw.a == 0)
-			recursion(arg[c], btw);
-		if (btw.r_large == 1 && btw.a == 1)
-			a_recursion(arg[c], btw);
+		if (btw.r_large == 1)
+			btw.a == 0 ? recursion(arg[c], btw) : a_recursion(arg[c], btw);
 	}
 }
 
@@ -215,8 +199,6 @@ void						open_once(char *arg, t_keycheck btw)
 		sort_files_time(fid, count_files(arg));
 	fork_key(fid, btw, count_file);
 	free(fid);
-	if (btw.r_large == 1 && btw.a == 0)
-		recursion(arg, btw);
-	if (btw.r_large == 1 && btw.a == 1)
-		a_recursion(arg, btw);
+	if (btw.r_large == 1)
+		btw.a == 0 ? recursion(arg, btw) : a_recursion(arg, btw);
 }

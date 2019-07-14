@@ -97,8 +97,16 @@ void					recursion(char *dir_n, t_keycheck btw);
 
 void					search_file(int c, char **arg, t_keycheck btw);
 
-char					*dir_piece(char *arg);
+char					*dir_p(char *arg);
 
 int						muhi_otdelno(char *arg, char *dst);
+
+void					add_dir_piece(char *dir_n, char *fn, struct dirent *myf);
+
+void					print_double_point(char *name);
+
+void					print_total(int bsize);
+
+void					print_err_dir(char *err_dir, int tmp);
 
 #endif

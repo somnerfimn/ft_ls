@@ -22,7 +22,8 @@ SRCS = srcs/ft_ls.c \
 		srcs/print_l.c \
 		srcs/sort_params.c \
 		srcs/subfunction.c \
-		srcs/search_file.c
+		srcs/search_file.c \
+		srcs/subf2.c \
 
 all : $(NAME)
 

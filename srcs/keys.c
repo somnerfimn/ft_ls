@@ -106,32 +106,23 @@ void				dir_err(int argc, char **copy_argv)
 	tmp = 1;
 	while (count != argc - 1)
 	{
-		dir = dir_piece(copy_argv[count]);
+		dir = dir_p(copy_argv[count]);
 		dir ? mydir = opendir(dir) : exit(1);
 		if (mydir != NULL)
 		{
 			while ((myf = readdir(mydir)) != NULL && tmp == 1)
 			{
 				fn = (char *)malloc(ft_strlen(copy_argv[count]) + ft_strlen(myf->d_name) + 2);
-				ft_strcpy(fn, copy_argv[count]);
-				ft_strcpy(fn + ft_strlen(copy_argv[count]), "/");
-				ft_strcpy(fn + ft_strlen(copy_argv[count]) + 1, myf->d_name);
+				add_dir_piece(copy_argv[count], fn, myf);
 				lstat(copy_argv[count], &mystat);
-				if (muhi_otdelno(copy_argv[count], myf->d_name) == 0)
-					tmp = 0;
+				muhi_otdelno(copy_argv[count], myf->d_name) == 0 ? tmp = 0 : 1;
+				muhi_otdelno(copy_argv[count], myf->d_name) == 2 ? tmp = 2 : 1;
 				free(fn);
 			}
 			closedir(mydir);
-			if (tmp == 1)
-			{
-				ft_putstr("ls: ");
-				ft_putstr(copy_argv[count]);
-				if (copy_argv[count][ft_strlen(copy_argv[count]) - 1] == '/')
-					ft_putstr(" Not a directory\n");
-				if (copy_argv[count][0] != '.')
-					ft_putstr(": No such file or directory\n");
-			}
 		}
+		if (tmp > 0)
+			print_err_dir(copy_argv[count], tmp);
 		count++;
 	}
 }
