@@ -120,9 +120,29 @@ t_file_time					link_name(t_file_time fid, char *fn)
 
 int							check_slnk(char *arg)
 {
-	if (arg[ft_strlen(arg) - 1] != '/')
-		return (1);
-	return (0);
+	DIR						*mydir;
+	struct dirent			*myf;
+	struct stat				mystat;
+	char					*fn;
+	int						result;
+
+	result = 0;
+	dir_p(arg) ? mydir = opendir(dir_p(arg)) : exit(1);
+	if (mydir != NULL)
+	{
+		while ((myf = readdir(mydir)) != NULL)
+		{
+			fn = (char *)malloc(ft_strlen(arg) + ft_strlen(myf->d_name) + 2);
+			add_dir_piece(arg, fn, myf);
+			lstat(arg, &mystat);
+			if (arg[ft_strlen(arg) - 1] != '/')
+				if (S_ISLNK(mystat.st_mode))
+					result = 1;
+			free(fn);
+		}
+		closedir(mydir);
+	}
+	return (result);
 }
 
 int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
@@ -165,12 +185,14 @@ void						open_all(int count, char **arg, t_keycheck btw)
 {
 	int						c;
 	int						b;
+	int						check;
 	t_file_time				*fid;
 
 	c = 0;
 	b = 0;
 	while (c < count - 1)
 	{
+		check = check_slnk(arg[c]);
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
 		if (!fid)
 			perror("fid");
@@ -180,10 +202,10 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		sort_files_time(fid, count_files(arg[c]));
 		if (btw.t == 0)
 			sort_files_ascii(fid, count_files(arg[c]));
-		if (check_slnk(arg[c]) == 0)
+		c++;
+		if (check == 0)
 		{
-			fork_key(fid, btw, b);	
-			c++;
+			fork_key(fid, btw, b);
 			if (c < count - 1 && b != 0)
 				ft_putstr("\n");
 			free(fid);
@@ -191,10 +213,7 @@ void						open_all(int count, char **arg, t_keycheck btw)
 				btw.a == 0 ? recursion(arg[c], btw) : a_recursion(arg[c], btw);
 		}
 		else
-		{
-			c++;
 			free(fid);
-		}
 	}
 }
 
