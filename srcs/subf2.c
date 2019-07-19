@@ -32,12 +32,38 @@ void		print_total(int bsize)
 	ft_putstr("\n");
 }
 
-void		print_err_dir(char *err_dir, int tmp)
+void		print_err_dir(char *err_dir, int tmp, struct stat mystat)
 {
-	ft_putstr("ft_ls: ");
-	ft_putstr(err_dir);
-	if (tmp == 2)
-		ft_putstr(" Not a directory\n");
-	else if (tmp == 1)
+	
+	if (tmp == 1)
+	{
+		ft_putstr("ft_ls: ");
+		ft_putstr(err_dir);
 		ft_putstr(": No such file or directory\n");
+	}
+	else if (tmp == 2 && !(S_ISDIR(mystat.st_mode)))
+	{
+		ft_putstr("ft_ls: ");
+		ft_putstr(err_dir);
+		ft_putstr(": Not a directory\n");
+	}
+}
+
+void		print_nap(char *name, t_keycheck btw)
+{
+	char	*linkbuf;
+	int		len;
+
+	linkbuf = (char *)malloc(sizeof(char) * 4096);
+	len = readlink(name, linkbuf, sizeof(linkbuf));
+	linkbuf[len] = '\0';
+	ft_putstr(name);
+	if (btw.l == 1)
+	{
+		ft_putstr(" -> ");
+		ft_putstr(linkbuf);
+	}
+	ft_putstr("\n");
+	free(linkbuf);
+	linkbuf = NULL;
 }

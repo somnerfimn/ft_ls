@@ -73,6 +73,14 @@ void						ft_ls(t_file_time file_in_dir, t_keycheck btw)
 	}
 }
 
+void						manipulate(int argc, char **argv, char **copy_argv,  t_keycheck btw)
+{
+	sort_params(argc - count_key(argc, argv) - 1, copy_argv);
+	dir_err(argc - count_key(argc, argv), copy_argv);
+	search_file(argc - count_key(argc, argv), copy_argv, btw);
+	open_all(argc - count_key(argc, argv), copy_argv, btw);
+}
+
 int							main(int argc, char **argv)
 {
 	char					*copy_argv[argc - 1 - count_key(argc, argv)];
@@ -92,10 +100,7 @@ int							main(int argc, char **argv)
 	{
 		while (++count != argc - count_key(argc, argv))
 			copy_argv[count - 1] = argv[count + count_key(argc, argv)];
-		sort_params(argc - count_key(argc, argv) - 1, copy_argv);
-		dir_err(argc - count_key(argc, argv), copy_argv);
-		search_file(argc - count_key(argc, argv), copy_argv, btw);
-		open_all(argc - count_key(argc, argv), copy_argv, btw);
+		manipulate(argc, argv, copy_argv, btw);
 	}
 	//system("leaks ft_ls");
 }

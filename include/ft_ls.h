@@ -107,6 +107,8 @@ void					print_double_point(char *name);
 
 void					print_total(int bsize);
 
-void					print_err_dir(char *err_dir, int tmp);
+void					print_err_dir(char *err_dir, int tmp, struct stat mys);
+
+void					print_nap(char *name, t_keycheck btw);
 
 #endif

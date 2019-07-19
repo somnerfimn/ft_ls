@@ -118,6 +118,13 @@ t_file_time					link_name(t_file_time fid, char *fn)
 	return(fid);
 }
 
+int							check_slnk(char *arg)
+{
+	if (arg[ft_strlen(arg) - 1] != '/')
+		return (1);
+	return (0);
+}
+
 int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 {
 	DIR						*mydir;
@@ -148,7 +155,7 @@ int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
 			free(fn);
 		}
 		closedir(mydir);
-		if (btw.l == 1)
+		if (btw.l == 1 && check_slnk(dir_n) == 0)
 			print_total(bsize);
 	}
 	return (count);
@@ -173,13 +180,21 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		sort_files_time(fid, count_files(arg[c]));
 		if (btw.t == 0)
 			sort_files_ascii(fid, count_files(arg[c]));
-		fork_key(fid, btw, b);
-		c++;
-		if (c < count - 1 && b != 0)
-			ft_putstr("\n");
-		free(fid);
-		if (btw.r_large == 1)
-			btw.a == 0 ? recursion(arg[c], btw) : a_recursion(arg[c], btw);
+		if (check_slnk(arg[c]) == 0)
+		{
+			fork_key(fid, btw, b);	
+			c++;
+			if (c < count - 1 && b != 0)
+				ft_putstr("\n");
+			free(fid);
+			if (btw.r_large == 1)
+				btw.a == 0 ? recursion(arg[c], btw) : a_recursion(arg[c], btw);
+		}
+		else
+		{
+			c++;
+			free(fid);
+		}
 	}
 }
 

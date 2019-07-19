@@ -78,8 +78,8 @@ void						search_file(int argc, char **c_argv, t_keycheck btw)
 	int						count;
 	char					*fn;
 
-	count = 0;
-	while (count != argc - 1)
+	count = -1;
+	while (++count != argc - 1)
 	{
 		dir_p(c_argv[count]) ? mydir = opendir(dir_p(c_argv[count])) : exit(1);
 		if (mydir != NULL)
@@ -94,12 +94,12 @@ void						search_file(int argc, char **c_argv, t_keycheck btw)
 					if (!(S_ISDIR(mystat.st_mode)) && btw.l == 1)
 						if (c_argv[count][ft_strlen(c_argv[count]) - 1] != '/')
 							access_rights(mystat);
-					S_ISDIR(mystat.st_mode) ? 1 : ft_putendl(c_argv[count]);
+					S_ISDIR(mystat.st_mode) ? 1 : print_nap(c_argv[count], btw);
 				}
 				free(fn);
 			}
 			closedir(mydir);
 		}
-		count++;
+//		count++;
 	}
 }

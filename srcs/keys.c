@@ -102,9 +102,9 @@ void				dir_err(int argc, char **copy_argv)
 	char					*dir;
 	int						tmp;
 
-	count = 0;
+	count = -1;
 	tmp = 1;
-	while (count != argc - 1)
+	while (++count != argc - 1)
 	{
 		dir = dir_p(copy_argv[count]);
 		dir ? mydir = opendir(dir) : exit(1);
@@ -122,7 +122,6 @@ void				dir_err(int argc, char **copy_argv)
 			closedir(mydir);
 		}
 		if (tmp > 0)
-			print_err_dir(copy_argv[count], tmp);
-		count++;
+			print_err_dir(copy_argv[count], tmp, mystat);
 	}
 }
