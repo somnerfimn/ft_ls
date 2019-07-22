@@ -29,6 +29,7 @@ void				recursion(char *dir_n, t_keycheck btw)
 			lstat(fn, &mystat);
 			if (S_ISDIR(mystat.st_mode) && (myf->d_name[0] != '.'))
 			{
+				ft_putstr("\n");
 				ft_putstr(fn);
 				ft_putstr(":\n");
 				open_once(fn, btw);

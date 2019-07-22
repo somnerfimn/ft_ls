@@ -76,7 +76,7 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		if (check == 0)
 		{
 			fork_key(fid, btw, b);
-			(c < count - 1 && b != 0) ? ft_putstr("\n") : 0;
+			(c < count - 2 && b != 0) ? ft_putstr("\n") : 0;
 			if (btw.r_large == 1)
 				btw.a == 0 ? recursion(arg[c], btw) : a_recursion(arg[c], btw);
 		}

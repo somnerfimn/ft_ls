@@ -29,7 +29,7 @@ void				dir_err(int argc, char **copy_argv)
 	struct stat				mystat;
 	t_dir_err				a;
 
-	a.count = -1;
+	a.count = 0;
 	a.tmp = 1;
 	while (++a.count != argc - 1)
 	{

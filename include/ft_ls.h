@@ -126,7 +126,7 @@ char					*dir_p(char *arg);
 
 int						muhi_otdelno(char *arg, char *dst);
 
-void					add_dir_piece(char *dir_n, char *fn, struct dirent *myf);
+void					add_dir_piece(char *dir_n, char *fn, struct dirent *m);
 
 void					print_double_point(char *name);
 
