@@ -12,63 +12,6 @@
 
 #include "../include/ft_ls.h"
 
-void				recursion(char *dir_n, t_keycheck btw)
-{
-	DIR				*mydir;
-	struct stat		mystat;
-	struct dirent	*myf;
-	char			*fn;
-
-	mydir = opendir(dir_n);
-	if (mydir != NULL)
-	{
-		while ((myf = readdir(mydir)) != NULL)
-		{
-			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
-			add_dir_piece(dir_n, fn, myf);
-			lstat(fn, &mystat);
-			if (S_ISDIR(mystat.st_mode) && (myf->d_name[0] != '.'))
-			{
-				ft_putstr("\n");
-				ft_putstr(fn);
-				ft_putstr(":\n");
-				open_once(fn, btw);
-			}
-			free(fn);
-		}
-		closedir (mydir);
-	}
-}
-
-void				a_recursion(char *dir_n, t_keycheck btw)
-{
-	DIR				*mydir;
-	struct stat		mystat;
-	struct dirent	*myf;
-	char			*fn;
-
-	mydir = opendir(dir_n);
-	if (mydir != NULL)
-	{
-		while ((myf = readdir(mydir)) != NULL)
-		{
-			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
-			add_dir_piece(dir_n, fn, myf);
-			lstat(fn, &mystat);
-			if (S_ISDIR(mystat.st_mode) && myf->d_name[1] != '\0')
-				if (ft_strcmp(myf->d_name, "..") != 0)
-				{
-					ft_putstr("\n");
-					ft_putstr(fn);
-					ft_putstr(":\n");
-					open_once(fn, btw);
-				}
-			free(fn);
-		}
-		closedir (mydir);
-	}
-}
-
 void						fork_key(t_file_time *fid, t_keycheck btw, int c)
 {
 	int						count;
@@ -83,39 +26,6 @@ void						fork_key(t_file_time *fid, t_keycheck btw, int c)
 		while (count != -1)
 			ft_ls(fid[count--], btw);
 	}
-}
-
-int							block_size(struct stat mystat)
-{
-	int						bsize;
-	int						tmp;
-
-	bsize = 0;
-	tmp = 0;
-	tmp += mystat.st_size;
-	bsize = tmp / 4096;
-	bsize *= 8;
-	bsize += 8;
-	if (mystat.st_size == 0)
-		return (0);
-	return (bsize);
-}
-
-t_file_time					link_name(t_file_time fid, char *fn)
-{
-	char					*linkbuf;
-	int						len;
-	int						i;
-
-	i = 0;
-	linkbuf = (char *)malloc(sizeof(char) * 4096);
-	fid.lnk = (char *)malloc(sizeof(char) * 4096);
-	len = readlink(fn, linkbuf, sizeof(linkbuf));
-	linkbuf[len] = '\0';
-	fid.lnk = ft_strcpy(fid.lnk, linkbuf);
-	free(linkbuf);
-	len = 0;
-	return(fid);
 }
 
 int							check_slnk(char *arg)
@@ -145,42 +55,6 @@ int							check_slnk(char *arg)
 	return (result);
 }
 
-int							files_struct(char *dir_n, t_file_time *fid, t_keycheck btw)
-{
-	DIR						*mydir;
-	int						bsize;
-	struct dirent			*myf;
-	struct stat				mystat;
-	int						count;
-	char					*fn;
-
-	count = 0;
-	bsize = 0;
-	mydir = opendir(dir_n);
-	if (mydir != NULL)
-	{
-		while ((myf = readdir(mydir)) != NULL)
-		{
-			fn = (char *)malloc(ft_strlen(dir_n) + ft_strlen(myf->d_name) + 2);
-			add_dir_piece(dir_n, fn, myf);
-			fid[count].myfile = myf;
-			lstat(fn, &mystat);
-			bsize += block_size(mystat);
-			if ((btw.a == 0 && myf->d_name[0] == '.') || S_ISDIR(mystat.st_mode))
-				bsize -= block_size(mystat);
-			fid[count].mystat = mystat;
-			if (S_ISLNK(mystat.st_mode))
-				fid[count] = link_name(fid[count], fn);
-			count++;
-			free(fn);
-		}
-		closedir(mydir);
-		if (btw.l == 1 && check_slnk(dir_n) == 0)
-			print_total(bsize);
-	}
-	return (count);
-}
-
 void						open_all(int count, char **arg, t_keycheck btw)
 {
 	int						c;
@@ -188,32 +62,25 @@ void						open_all(int count, char **arg, t_keycheck btw)
 	int						check;
 	t_file_time				*fid;
 
-	c = 0;
-	b = 0;
-	while (c < count - 1)
+	c = -1;
+	while (++c < count - 1)
 	{
 		check = check_slnk(arg[c]);
 		fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg[c]));
-		if (!fid)
-			perror("fid");
+		(!fid) ? perror("fid") : 0;
 		if (count > 2 && count_files(arg[c]) != 0)
 			print_double_point(arg[c]);
 		b = files_struct(arg[c], fid, btw);
 		sort_files_time(fid, count_files(arg[c]));
-		if (btw.t == 0)
-			sort_files_ascii(fid, count_files(arg[c]));
-		c++;
+		btw.t == 0 ? sort_files_ascii(fid, count_files(arg[c])) : 0;
 		if (check == 0)
 		{
 			fork_key(fid, btw, b);
-			if (c < count - 1 && b != 0)
-				ft_putstr("\n");
-			free(fid);
+			(c < count - 1 && b != 0) ? ft_putstr("\n") : 0;
 			if (btw.r_large == 1)
 				btw.a == 0 ? recursion(arg[c], btw) : a_recursion(arg[c], btw);
 		}
-		else
-			free(fid);
+		free(fid);
 	}
 }
 
@@ -224,15 +91,12 @@ void						open_once(char *arg, t_keycheck btw)
 
 	count_file = 0;
 	fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg));
-	if (!fid)
-		perror("fid");
+	(!fid) ? perror("fid") : 0;
 	count_file = files_struct(arg, fid, btw);
-	if (btw.t == 0)
-		sort_files_ascii(fid, count_files(arg));
-	else
+	btw.t == 0 ? sort_files_ascii(fid, count_files(arg)) :
 		sort_files_time(fid, count_files(arg));
 	fork_key(fid, btw, count_file);
-	free(fid);
 	if (btw.r_large == 1)
 		btw.a == 0 ? recursion(arg, btw) : a_recursion(arg, btw);
+	free(fid);
 }

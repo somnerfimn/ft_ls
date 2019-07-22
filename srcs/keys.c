@@ -12,19 +12,6 @@
 
 #include "../include/ft_ls.h"
 
-int					count_key(int argc, char **argv)
-{
-	int				result;
-
-	result = 1;
-	while (result != argc)
-		if (argv[result][0] == '-' && argv[result][1] != '\0')
-			result++;
-		else
-			return (result - 1);
-	return (result - 1);
-}
-
 int					count_files(char *dir_name)
 {
 	DIR				*mydir;
@@ -47,7 +34,7 @@ void				print_err(char key_err)
 	ft_putstr("ft_ls: illegal option -- ");
 	write(1, &key_err, 1);
 	ft_putendl("\nusage: ft_ls [-Ralrt] [file ...]");
-	exit (1);
+	exit(1);
 }
 
 int					check_some_key(char *arg, char key)
@@ -90,38 +77,4 @@ t_keycheck			search_key(int argc, char **arguments, t_keycheck btw)
 		count++;
 	}
 	return (btw);
-}
-
-void				dir_err(int argc, char **copy_argv)
-{
-	DIR						*mydir;
-	struct dirent			*myf;
-	struct stat				mystat;
-	int						count;
-	char					*fn;
-	char					*dir;
-	int						tmp;
-
-	count = -1;
-	tmp = 1;
-	while (++count != argc - 1)
-	{
-		dir = dir_p(copy_argv[count]);
-		dir ? mydir = opendir(dir) : exit(1);
-		if (mydir != NULL)
-		{
-			while ((myf = readdir(mydir)) != NULL && tmp == 1)
-			{
-				fn = (char *)malloc(ft_strlen(copy_argv[count]) + ft_strlen(myf->d_name) + 2);
-				add_dir_piece(copy_argv[count], fn, myf);
-				lstat(copy_argv[count], &mystat);
-				muhi_otdelno(copy_argv[count], myf->d_name) == 0 ? tmp = 0 : 1;
-				muhi_otdelno(copy_argv[count], myf->d_name) == 2 ? tmp = 2 : 1;
-				free(fn);
-			}
-			closedir(mydir);
-		}
-		if (tmp > 0)
-			print_err_dir(copy_argv[count], tmp, mystat);
-	}
 }

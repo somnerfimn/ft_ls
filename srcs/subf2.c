@@ -14,9 +14,9 @@
 
 void		add_dir_piece(char *dir_n, char *fn, struct dirent *myf)
 {
-		ft_strcpy(fn, dir_n);
-		ft_strcpy(fn + ft_strlen(dir_n), "/");
-		ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
+	ft_strcpy(fn, dir_n);
+	ft_strcpy(fn + ft_strlen(dir_n), "/");
+	ft_strcpy(fn + ft_strlen(dir_n) + 1, myf->d_name);
 }
 
 void		print_double_point(char *name)
@@ -34,7 +34,6 @@ void		print_total(int bsize)
 
 void		print_err_dir(char *err_dir, int tmp, struct stat mystat)
 {
-	
 	if (tmp == 1)
 	{
 		ft_putstr("ft_ls: ");
@@ -58,7 +57,7 @@ void		print_nap(char *name, t_keycheck btw)
 	len = readlink(name, linkbuf, sizeof(linkbuf));
 	linkbuf[len] = '\0';
 	ft_putstr(name);
-	if (btw.l == 1)
+	if (btw.l == 1 && len != -1)
 	{
 		ft_putstr(" -> ");
 		ft_putstr(linkbuf);

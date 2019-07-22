@@ -26,7 +26,7 @@ int							muhi_otdelno(char *arg, char *dst)
 		count++;
 	}
 	count = 0;
-	while(arg[tmp] == dst[count])
+	while (arg[tmp] == dst[count])
 	{
 		tmp++;
 		count++;
@@ -35,7 +35,7 @@ int							muhi_otdelno(char *arg, char *dst)
 		if (arg[tmp] == '/' && dst[count] == '\0')
 			return (2);
 	}
-		return (1);
+	return (1);
 }
 
 char						*dir_p(char *arg)
@@ -44,30 +44,37 @@ char						*dir_p(char *arg)
 	char					*result;
 	int						tmp;
 
-	count = 0;
+	count = -1;
 	tmp = 0;
 	result = (char *)malloc(sizeof(char) * 4096);
 	result[0] = '.';
-	while (arg[count] != 0)
-	{
+	while (arg[++count] != 0)
 		if (arg[count] == '/' && arg[count + 1] != '\0')
 			tmp = count;
-		count++;
-	}
-	count = 0;
+	count = -1;
 	if (tmp != 0)
-		while(count != tmp)
-		{
+		while (++count != tmp)
 			result[count] = arg[count];
-			count++;
-		}
 	else
 	{
 		free(result);
-		return(".");
+		return (".");
 	}
 	result[count] = '\0';
+	free(result);
 	return (result);
+}
+
+void						help(char *name, char *dname, t_keycheck btw,
+	struct stat mystat)
+{
+	if (muhi_otdelno(name, dname) == 0)
+	{
+		if (!(S_ISDIR(mystat.st_mode)) && btw.l == 1)
+			if (name[ft_strlen(name) - 1] != '/')
+				access_rights(mystat);
+		S_ISDIR(mystat.st_mode) ? 1 : print_nap(name, btw);
+	}
 }
 
 void						search_file(int argc, char **c_argv, t_keycheck btw)
@@ -86,20 +93,13 @@ void						search_file(int argc, char **c_argv, t_keycheck btw)
 		{
 			while ((myf = readdir(mydir)) != NULL)
 			{
-				fn = (char *)malloc(ft_strlen(c_argv[count]) + ft_strlen(myf->d_name) + 2);
+				fn = (char *)malloc(ft_mall(c_argv[count], myf->d_name));
 				add_dir_piece(c_argv[count], fn, myf);
 				lstat(c_argv[count], &mystat);
-				if (muhi_otdelno(c_argv[count], myf->d_name) == 0)
-				{
-					if (!(S_ISDIR(mystat.st_mode)) && btw.l == 1)
-						if (c_argv[count][ft_strlen(c_argv[count]) - 1] != '/')
-							access_rights(mystat);
-					S_ISDIR(mystat.st_mode) ? 1 : print_nap(c_argv[count], btw);
-				}
+				help(c_argv[count], myf->d_name, btw, mystat);
 				free(fn);
 			}
 			closedir(mydir);
 		}
-//		count++;
 	}
 }

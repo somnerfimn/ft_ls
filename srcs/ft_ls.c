@@ -12,43 +12,22 @@
 
 #include "../include/ft_ls.h"
 
-int						ft_strlen(const char *str)
-{
-	size_t					tmp;
-
-	tmp = 0;
-	while (str[tmp] != '\0')
-		tmp++;
-	return (tmp);
-}
-
-char	*ft_strnew(size_t size)
-{
-	char	*str;
-	size_t	count;
-
-	count = 0;
-	str = (char *)malloc(sizeof(*str) * (size + 1));
-	if (!str)
-		return (NULL);
-	while (count < size + 1)
-		str[count++] = '\0';
-	return (str);
-}
-
-void						write_path_lnk(t_file_time file_in_dir, t_keycheck btw)
+void			write_path_lnk(t_file_time fid, t_keycheck btw)
 {
 	if (btw.l == 1)
 	{
 		ft_putstr(" -> ");
-		ft_putendl(file_in_dir.lnk);
-		free(file_in_dir.lnk);
+		ft_putendl(fid.lnk);
+		free(fid.lnk);
 	}
 	else
+	{
+		free(fid.lnk);
 		ft_putstr("\n");
+	}
 }
 
-void						ft_ls(t_file_time file_in_dir, t_keycheck btw)
+void			ft_ls(t_file_time file_in_dir, t_keycheck btw)
 {
 	if (btw.a == 0)
 		if (file_in_dir.myfile->d_name[0] != '.')
@@ -73,19 +52,19 @@ void						ft_ls(t_file_time file_in_dir, t_keycheck btw)
 	}
 }
 
-void						manipulate(int argc, char **argv, char **copy_argv,  t_keycheck btw)
+void			manipulate(int ar, char **argv, char **c_argv, t_keycheck btw)
 {
-	sort_params(argc - count_key(argc, argv) - 1, copy_argv);
-	dir_err(argc - count_key(argc, argv), copy_argv);
-	search_file(argc - count_key(argc, argv), copy_argv, btw);
-	open_all(argc - count_key(argc, argv), copy_argv, btw);
+	sort_params(ar - count_key(ar, argv) - 1, c_argv);
+	dir_err(ar - count_key(ar, argv), c_argv);
+	search_file(ar - count_key(ar, argv), c_argv, btw);
+	open_all(ar - count_key(ar, argv), c_argv, btw);
 }
 
-int							main(int argc, char **argv)
+int				main(int argc, char **argv)
 {
-	char					*copy_argv[argc - 1 - count_key(argc, argv)];
-	int						count;
-	t_keycheck				btw;
+	char		*copy_argv[argc - 1 - count_key(argc, argv)];
+	int			count;
+	t_keycheck	btw;
 
 	btw.a = 0;
 	btw.l = 0;
@@ -102,5 +81,4 @@ int							main(int argc, char **argv)
 			copy_argv[count - 1] = argv[count + count_key(argc, argv)];
 		manipulate(argc, argv, copy_argv, btw);
 	}
-	//system("leaks ft_ls");
 }

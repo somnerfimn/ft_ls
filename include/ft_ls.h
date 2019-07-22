@@ -25,6 +25,15 @@
 # include <time.h>
 # include <string.h>
 
+typedef struct			s_dir_err
+{
+	int					count;
+	char				*fn;
+	int					tmp;
+	int					len;
+	char				*pdir;
+}						t_dir_err;
+
 typedef struct			s_keycheck
 {
 	int					a;
@@ -40,6 +49,20 @@ typedef struct			s_file_time
 	struct stat			mystat;
 	char				*lnk;
 }						t_file_time;
+
+typedef struct			s_fstr
+{
+	int					bsize;
+	int					count;
+	char				*fn;
+}						t_fstr;
+
+typedef struct			s_slnk
+{
+	char				*fn;
+	int					result;
+	char				*pdir;
+}						t_slnk;
 
 void					ft_putchar(char c);
 
@@ -95,6 +118,8 @@ int						ft_strlen(const char *str);
 
 void					recursion(char *dir_n, t_keycheck btw);
 
+void					a_recursion(char *dir_n, t_keycheck btw);
+
 void					search_file(int c, char **arg, t_keycheck btw);
 
 char					*dir_p(char *arg);
@@ -110,5 +135,15 @@ void					print_total(int bsize);
 void					print_err_dir(char *err_dir, int tmp, struct stat mys);
 
 void					print_nap(char *name, t_keycheck btw);
+
+char					*ft_strnew(size_t size);
+
+int						block_size(struct stat mystat, t_keycheck btw, char *n);
+
+t_file_time				link_name(t_file_time fid, char *fn);
+
+int						check_slnk(char *arg);
+
+int						ft_mall(char *name, char *d_name);
 
 #endif

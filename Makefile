@@ -24,6 +24,10 @@ SRCS = srcs/ft_ls.c \
 		srcs/subfunction.c \
 		srcs/search_file.c \
 		srcs/subf2.c \
+		srcs/ft_strlen.c \
+		srcs/dir_err.c \
+		srcs/recursion.c \
+		srcs/file_struct.c
 
 all : $(NAME)
 
