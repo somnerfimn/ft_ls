@@ -18,35 +18,32 @@ void			write_path_lnk(t_file_time fid, t_keycheck btw)
 	{
 		ft_putstr(" -> ");
 		ft_putendl(fid.lnk);
-		free(fid.lnk);
 	}
 	else
-	{
-		free(fid.lnk);
 		ft_putstr("\n");
-	}
+	free(fid.lnk);
 }
 
-void			ft_ls(t_file_time file_in_dir, t_keycheck btw)
+void			ft_ls(t_file_time fid, t_keycheck btw, t_print t)
 {
 	if (btw.a == 0)
-		if (file_in_dir.myfile->d_name[0] != '.')
+		if (fid.myfile->d_name[0] != '.')
 		{
 			if (btw.l == 1)
-				access_rights(file_in_dir.mystat);
-			ft_putstr(file_in_dir.myfile->d_name);
-			if (S_ISLNK(file_in_dir.mystat.st_mode))
-				write_path_lnk(file_in_dir, btw);
+				access_rights(fid.mystat, t);
+			ft_putstr(fid.myfile->d_name);
+			if (S_ISLNK(fid.mystat.st_mode))
+				write_path_lnk(fid, btw);
 			else
 				ft_putstr("\n");
 		}
 	if (btw.a == 1)
 	{
 		if (btw.l == 1)
-			access_rights(file_in_dir.mystat);
-		ft_putstr(file_in_dir.myfile->d_name);
-		if (S_ISLNK(file_in_dir.mystat.st_mode))
-			write_path_lnk(file_in_dir, btw);
+			access_rights(fid.mystat, t);
+		ft_putstr(fid.myfile->d_name);
+		if (S_ISLNK(fid.mystat.st_mode))
+			write_path_lnk(fid, btw);
 		else
 			ft_putstr("\n");
 	}

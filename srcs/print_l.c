@@ -86,14 +86,15 @@ void				print_time(time_t time_m)
 		while (count++ != 23)
 			ft_putchar(mod_time[count]);
 	}
-	ft_putstr("  ");
+	ft_putstr(" ");
 }
 
-void				access_rights(struct stat mystat)
+void				access_rights(struct stat mystat, t_print t)
 {
 	struct passwd	*pw;
 	struct group	*gr;
 	int				iaccess;
+	int				a;
 
 	pw = getpwuid(mystat.st_uid);
 	gr = getgrgid(mystat.st_gid);
@@ -104,13 +105,13 @@ void				access_rights(struct stat mystat)
 	write_access(iaccess % 100 / 10);
 	write_access(iaccess % 10);
 	ft_putstr("  ");
+	a = count_num(t.count_lnk);
+	while (a-- > count_num(mystat.st_nlink))
+		ft_putstr(" ");
 	ft_putnbr(mystat.st_nlink);
-	ft_putchar('\t');
+	ft_putstr(" ");
 	ft_putstr(pw->pw_name);
 	ft_putstr("  ");
 	ft_putstr(gr->gr_name);
-	ft_putchar('\t');
-	ft_putnbr(mystat.st_size);
-	ft_putchar('\t');
-	print_time(mystat.st_mtime);
+	omegalul_l(mystat, t);
 }

@@ -68,11 +68,23 @@ char						*dir_p(char *arg)
 void						help(char *name, char *dname, t_keycheck btw,
 	struct stat mystat)
 {
+	struct stat				mys;
+	t_print					t;
+
+	t.count_mem = 0;
+	if (muhi_otdelno(name, dname) == 2)
+	{
+		if (S_ISLNK(mystat.st_mode) && btw.l == 1)
+		{
+			stat(name, &mys);
+			access_rights(mys, t);
+			ft_putendl(name);
+		}
+	}
 	if (muhi_otdelno(name, dname) == 0)
 	{
 		if (!(S_ISDIR(mystat.st_mode)) && btw.l == 1)
-			if (name[ft_strlen(name) - 1] != '/')
-				access_rights(mystat);
+			access_rights(mystat, t);
 		S_ISDIR(mystat.st_mode) ? 1 : print_nap(name, btw);
 	}
 }
@@ -82,22 +94,22 @@ void						search_file(int argc, char **c_argv, t_keycheck btw)
 	DIR						*mydir;
 	struct dirent			*myf;
 	struct stat				mystat;
-	int						count;
-	char					*fn;
+	t_search				t;
 
-	count = -1;
-	while (++count != argc - 1)
+	t.count = -1;
+	while (++t.count != argc - 1)
 	{
-		dir_p(c_argv[count]) ? mydir = opendir(dir_p(c_argv[count])) : exit(1);
+		dir_p(c_argv[t.count]) ?
+			mydir = opendir(dir_p(c_argv[t.count])) : exit(1);
 		if (mydir != NULL)
 		{
 			while ((myf = readdir(mydir)) != NULL)
 			{
-				fn = (char *)malloc(ft_mall(c_argv[count], myf->d_name));
-				add_dir_piece(c_argv[count], fn, myf);
-				lstat(c_argv[count], &mystat);
-				help(c_argv[count], myf->d_name, btw, mystat);
-				free(fn);
+				t.fn = (char *)malloc(ft_mall(c_argv[t.count], myf->d_name));
+				add_dir_piece(c_argv[t.count], t.fn, myf);
+				lstat(myf->d_name, &mystat);
+				help(c_argv[t.count], myf->d_name, btw, mystat);
+				free(t.fn);
 			}
 			closedir(mydir);
 		}

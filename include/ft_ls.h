@@ -64,6 +64,20 @@ typedef struct			s_slnk
 	char				*pdir;
 }						t_slnk;
 
+typedef struct			s_search
+{
+	int					count;
+	char				*fn;
+	int					cfile;
+
+}						t_search;
+
+typedef struct			s_print
+{
+	int			count_lnk;
+	int			count_mem;
+}						t_print;
+
 void					ft_putchar(char c);
 
 void					ft_putstr(char *str);
@@ -84,7 +98,7 @@ void					print_time(time_t time_m);
 
 int						count_key(int argc, char **argv);
 
-void					access_rights(struct stat mystat);
+void					access_rights(struct stat mystat, t_print t);
 
 int						count_files(char *dir_name);
 
@@ -94,7 +108,7 @@ t_file_time				*sort_files_time(t_file_time *af, int files_count);
 
 t_file_time				*sort_files_ascii(t_file_time *af, int files_count);
 
-void					ft_ls(t_file_time file_in_dir, t_keycheck btw);
+void					ft_ls(t_file_time fid, t_keycheck btw, t_print t);
 
 int						check_some_key(char *argument, char key);
 
@@ -145,5 +159,11 @@ t_file_time				link_name(t_file_time fid, char *fn);
 int						check_slnk(char *arg);
 
 int						ft_mall(char *name, char *d_name);
+
+void					i_dont_know_my_name(struct stat mystat, t_print t);
+
+void					omegalul_l(struct stat mystat, t_print t);
+
+int						count_num(size_t a);
 
 #endif

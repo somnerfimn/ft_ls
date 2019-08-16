@@ -12,19 +12,49 @@
 
 #include "../include/ft_ls.h"
 
+t_print						space(t_file_time fid, t_print t, t_keycheck btw)
+{
+	if (fid.mystat.st_nlink > t.count_lnk)
+	{
+		if (btw.a == 0 && fid.myfile->d_name[0] != '.')
+			t.count_lnk = fid.mystat.st_nlink;
+		else if (btw.a == 1)
+			t.count_lnk = fid.mystat.st_nlink;
+	}
+	if (fid.mystat.st_size > t.count_mem)
+	{
+		if (btw.a == 0 && fid.myfile->d_name[0] != '.')
+			t.count_mem = fid.mystat.st_size;
+		else if (btw.a == 1)
+			t.count_mem = fid.mystat.st_size;
+	}
+	return (t);
+}
+
 void						fork_key(t_file_time *fid, t_keycheck btw, int c)
 {
 	int						count;
+	t_print					t;
 
 	count = 0;
+	t.count_lnk = 0;
+	t.count_mem = 0;
 	if (btw.r == 0)
+	{
 		while (count != c)
-			ft_ls(fid[count++], btw);
+			t = space(fid[count++], t, btw);
+		count = 0;
+		while (count != c)
+			ft_ls(fid[count++], btw, t);
+	}
 	if (btw.r == 1)
 	{
 		count = c - 1;
 		while (count != -1)
-			ft_ls(fid[count--], btw);
+			t = space(fid[count--], t, btw);
+		count = c - 1;
+		while (count != -1)
+			ft_ls(fid[count--], btw, t);
 	}
 }
 
@@ -71,12 +101,11 @@ void						open_all(int count, char **arg, t_keycheck btw)
 		if (count > 2 && count_files(arg[c]) != 0)
 			print_double_point(arg[c]);
 		b = files_struct(arg[c], fid, btw);
-		sort_files_time(fid, count_files(arg[c]));
-		btw.t == 0 ? sort_files_ascii(fid, count_files(arg[c])) : 0;
+		sort_files_ascii(fid, count_files(arg[c]));
+		btw.t == 1 ? sort_files_time(fid, count_files(arg[c])) : 0;
 		if (check == 0)
 		{
 			fork_key(fid, btw, b);
-			(c < count - 2 && b != 0) ? ft_putstr("\n") : 0;
 			if (btw.r_large == 1)
 				btw.a == 0 ? recursion(arg[c], btw) : a_recursion(arg[c], btw);
 		}
@@ -93,8 +122,8 @@ void						open_once(char *arg, t_keycheck btw)
 	fid = (t_file_time *)malloc(sizeof(t_file_time) * count_files(arg));
 	(!fid) ? perror("fid") : 0;
 	count_file = files_struct(arg, fid, btw);
-	btw.t == 0 ? sort_files_ascii(fid, count_files(arg)) :
-		sort_files_time(fid, count_files(arg));
+	sort_files_ascii(fid, count_files(arg));
+	btw.t == 1 ? sort_files_time(fid, count_files(arg)) : 0;
 	fork_key(fid, btw, count_file);
 	if (btw.r_large == 1)
 		btw.a == 0 ? recursion(arg, btw) : a_recursion(arg, btw);

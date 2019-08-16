@@ -29,10 +29,10 @@ void				dir_err(int argc, char **copy_argv)
 	struct stat				mystat;
 	t_dir_err				a;
 
-	a.count = 0;
-	a.tmp = 1;
+	a.count = -1;
 	while (++a.count != argc - 1)
 	{
+		a.tmp = 1;
 		a.pdir = dir_p(copy_argv[a.count]);
 		mydir = opendir(a.pdir);
 		if (mydir != NULL)
@@ -41,7 +41,7 @@ void				dir_err(int argc, char **copy_argv)
 			{
 				a.fn = (char *)malloc(ft_mall(copy_argv[a.count], myf->d_name));
 				add_dir_piece(copy_argv[a.count], a.fn, myf);
-				lstat(copy_argv[a.count], &mystat);
+				lstat(myf->d_name, &mystat);
 				a.tmp = muhi_otdelno(copy_argv[a.count], myf->d_name);
 				free(a.fn);
 			}

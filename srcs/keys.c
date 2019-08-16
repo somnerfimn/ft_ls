@@ -31,9 +31,10 @@ int					count_files(char *dir_name)
 
 void				print_err(char key_err)
 {
-	ft_putstr("ft_ls: illegal option -- ");
+	ft_putstr("ls: illegal option -- ");
 	write(1, &key_err, 1);
-	ft_putendl("\nusage: ft_ls [-Ralrt] [file ...]");
+	ft_putstr("\nusage: ls [-ABCFGHLOPRSTUWabcdefghi");
+	ft_putendl("klmnopqrstuwx1] [file ...]");
 	exit(1);
 }
 
